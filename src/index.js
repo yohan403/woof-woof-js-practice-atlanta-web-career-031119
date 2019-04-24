@@ -1,5 +1,5 @@
 // document.addEventListener('DOMContentLoaded', function(){
-    
+
 // });
 
 
@@ -9,10 +9,10 @@ fetch('http://localhost:3000/pups')
 
 
 function addAllPups(pups) {
-    pups.forEach(pup => addAPup(pup))
+    pups.forEach(pup => addAPupButton(pup))
 }
 
-function addAPup(pup) {
+function addAPupButton(pup) {
     const pupList = document.querySelector('#dog-bar')
 
     let span = document.createElement('span')
@@ -60,11 +60,14 @@ function addThePup(thePup) {
     h2.innerText = thePup.name
 
     let button = document.createElement('button')
+    button.id = thePup.id
     if (thePup.isGoodDog == true) {
         button.innerText = "Good Dog!"
     } else {
         button.innerText = "Bad Dog!"
     }
+
+    button.addEventListener('click', handleUpdateClick)
 
     dogInfo.appendChild(img)
     dogInfo.appendChild(h2)
@@ -80,9 +83,51 @@ function replaceThePup(thePup) {
     h2.innerText = thePup.name
 
     let button = document.querySelector('#dog-info button')
+    button.id = thePup.id
     if (thePup.isGoodDog == true) {
         button.innerText = "Good Dog!"
     } else {
         button.innerText = "Bad Dog!"
+    }
+
+    button.addEventListener('click', handleUpdateClick)
+}
+
+function handleUpdateClick(e) {
+    e.preventDefault()
+    const id = e.target.id
+
+    fetch('http://localhost:3000/pups')
+    .then(function(response) { return response.json(); })
+    .then(function(pups) { findDogForUpdate(id,pups); })
+}
+
+
+function findDogForUpdate(id,pups) {
+    id = id - 1
+    let thePup = pups[`${id}`]
+
+    updateStatus(thePup)
+}
+
+function updateStatus(thePup) {
+
+    changeStatus(thePup)
+
+    fetch(`http://localhost:3000/pups/${thePup.id}`,{
+	headers:{
+		'Content-Type': 'application/json' 
+	},	
+	method:'PATCH',
+	body: JSON.stringify(thePup)
+    }).then((response)=> console.log(response))
+
+}
+
+function changeStatus(thePup) {
+    if (thePup.isGoodDog == true) {
+        thePup.isGoodDog = false
+    } else {
+        thePup.isGoodDog = true
     }
 }

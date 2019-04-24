@@ -110,6 +110,14 @@ function findDogForUpdate(id,pups) {
     updateStatus(thePup)
 }
 
+function changeStatus(thePup) {
+    if (thePup.isGoodDog == true) {
+        thePup.isGoodDog = false
+    } else {
+        thePup.isGoodDog = true
+    }
+}
+
 function updateStatus(thePup) {
 
     changeStatus(thePup)
@@ -120,14 +128,11 @@ function updateStatus(thePup) {
 	},	
 	method:'PATCH',
 	body: JSON.stringify(thePup)
-    }).then((response)=> console.log(response))
+    }).then((response)=> response)
 
-}
-
-function changeStatus(thePup) {
     if (thePup.isGoodDog == true) {
-        thePup.isGoodDog = false
+        document.querySelector('#dog-info button').innerText = "Good Dog!"
     } else {
-        thePup.isGoodDog = true
+        document.querySelector('#dog-info button').innerText = "Bad Dog!"
     }
 }
